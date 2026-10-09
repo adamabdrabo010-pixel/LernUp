@@ -1,0 +1,959 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6554e8">
+<title>LernUp – Verstehe mehr. Erreiche mehr.</title>
+<style>
+:root {
+  --bg:#f6f7fc;
+  --surface:#ffffff;
+  --text:#20213a;
+  --muted:#777990;
+  --primary:#6554e8;
+  --primary-light:#eeebff;
+  --border:#e8e9f2;
+  --green:#16875d;
+  --red:#d84e62;
+  --shadow:0 12px 35px rgba(35,32,80,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.6
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
+  outline:3px solid #a79cff;outline-offset:3px
+}
+.topbar{
+  height:72px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5%;position:sticky;top:0;z-index:20
+}
+.brand{font-size:27px;font-weight:900;letter-spacing:-1px;color:var(--primary)}
+.brand span{color:#25233d}
+.toplinks{display:flex;align-items:center;gap:24px;font-size:14px;font-weight:650}
+.toplinks a:hover{color:var(--primary)}
+.profile{
+  background:var(--primary-light);color:var(--primary);
+  border-radius:50px;padding:8px 13px;font-weight:750
+}
+.layout{display:grid;grid-template-columns:235px minmax(0,1fr);min-height:calc(100vh - 72px)}
+.sidebar{
+  background:#fff;border-right:1px solid var(--border);padding:28px 17px;
+  display:flex;flex-direction:column;gap:8px
+}
+.side-label{
+  color:var(--muted);font-size:11px;font-weight:800;
+  letter-spacing:1.4px;padding:12px 12px 5px;text-transform:uppercase
+}
+.navbtn{
+  border:0;background:transparent;text-align:left;padding:12px;
+  border-radius:12px;color:#5c5d75;font-weight:650;display:flex;
+  align-items:center;gap:12px;width:100%
+}
+.navbtn:hover,.navbtn.active{background:var(--primary-light);color:var(--primary)}
+.nav-icon{font-size:19px;width:24px;text-align:center}
+.side-note{
+  margin-top:auto;padding:16px;border-radius:17px;background:#f4f1ff;
+  color:#5545c4;font-size:13px
+}
+main{min-width:0;padding:34px clamp(16px,4vw,48px);max-width:1500px;width:100%;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+.eyebrow{
+  color:var(--primary);font-size:12px;font-weight:850;
+  text-transform:uppercase;letter-spacing:1.4px
+}
+h1{font-size:clamp(29px,4vw,43px);line-height:1.15;letter-spacing:-1.4px;margin:9px 0 12px}
+h2{font-size:25px;letter-spacing:-.6px;margin:0 0 7px}
+h3{font-size:18px;margin:0 0 6px}
+p{margin:0 0 12px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.hero{
+  background:linear-gradient(120deg,#5141c9,#7765f2 65%,#a18bff);
+  color:white;padding:clamp(25px,4vw,43px);border-radius:25px;
+  position:relative;overflow:hidden;box-shadow:0 18px 40px #6554e826
+}
+.hero:after{
+  content:"";position:absolute;width:250px;height:250px;border:40px solid #ffffff13;
+  border-radius:50%;right:-65px;top:-85px;pointer-events:none
+}
+.hero h1{max-width:660px;font-size:clamp(32px,4vw,47px)}
+.hero p{max-width:620px;color:#efedff;font-size:15px}
+.hero-bottom{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:24px}
+.btn{
+  border:0;border-radius:11px;padding:11px 16px;font-weight:750;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px
+}
+.btn-primary{background:var(--primary);color:white}
+.btn-primary:hover{background:#5141cf}
+.btn-white{background:white;color:#5444cc}
+.btn-ghost{background:#ffffff20;border:1px solid #ffffff60;color:white}
+.btn-soft{background:var(--primary-light);color:var(--primary)}
+.btn-outline{background:white;border:1px solid var(--border);color:var(--text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin:23px 0 36px}
+.stat,.panel,.course-card,.lesson-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  box-shadow:var(--shadow)
+}
+.stat{padding:19px}
+.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.stat-icon{font-size:21px;background:#f1efff;padding:9px;border-radius:12px}
+.stat-number{font-size:27px;font-weight:850;letter-spacing:-1px;margin-top:8px}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 0 17px}
+.section-head p{margin-bottom:0}
+.subject-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.course-card{padding:20px;transition:transform .18s,border-color .18s}
+.course-card:hover{transform:translateY(-3px);border-color:#c9c2ff}
+.course-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px}
+.course-icon{width:49px;height:49px;border-radius:14px;display:grid;place-items:center;font-size:25px}
+.tag{font-size:11px;font-weight:800;background:#f0eff7;color:#666781;padding:5px 9px;border-radius:30px}
+.course-card p{font-size:13px;color:var(--muted);min-height:43px}
+.course-meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px;margin:15px 0}
+.course-card .btn{width:100%}
+.progress-track{height:6px;background:#ececf5;border-radius:30px;overflow:hidden}
+.progress-fill{height:100%;background:var(--primary);border-radius:30px;transition:width .25s}
+.two-col{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,1fr);gap:18px;margin-top:32px}
+.panel{padding:23px}
+.panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}
+.activity{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}
+.activity:last-child{border-bottom:0}
+.activity-icon{font-size:21px;width:43px;height:43px;display:grid;place-items:center;background:#f2f0ff;border-radius:13px}
+.activity-copy{flex:1;min-width:0}
+.activity-copy strong{display:block;font-size:14px}
+.activity-copy span{font-size:12px;color:var(--muted)}
+.activity-points{font-size:13px;font-weight:800;color:var(--green)}
+.searchbar{
+  display:flex;gap:10px;align-items:center;background:white;border:1px solid var(--border);
+  border-radius:12px;padding:0 13px;min-width:0
+}
+.searchbar input{border:0;outline:none;padding:12px 0;width:100%;min-width:0;background:transparent}
+.filters{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0}
+.filters select{border:1px solid var(--border);border-radius:10px;padding:10px;background:white;color:var(--text)}
+.lesson-layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px;align-items:start}
+.lesson-card{padding:clamp(20px,4vw,35px)}
+.lesson-card h2{margin-top:10px}
+.lesson-body{line-height:1.85;font-size:15px}
+.lesson-body h3{margin-top:25px}
+.lesson-body ul{padding-left:23px}
+.definition{
+  border-left:4px solid var(--primary);padding:15px 18px;
+  background:#f3f1ff;border-radius:0 12px 12px 0;margin:20px 0
+}
+.formula{
+  padding:18px;background:#25233f;color:#fff;border-radius:12px;
+  text-align:center;font-size:clamp(17px,2vw,23px);margin:17px 0;overflow-wrap:anywhere
+}
+.lesson-side{position:sticky;top:94px}
+.lesson-side .panel{margin-bottom:15px}
+.module-list{list-style:none;padding:0;margin:12px 0}
+.module-list li{border-bottom:1px solid var(--border)}
+.module-link{
+  border:0;background:transparent;text-align:left;width:100%;padding:13px 4px;
+  display:flex;gap:10px;align-items:start;color:var(--text)
+}
+.module-link:hover{color:var(--primary)}
+.module-link .check{width:22px;height:22px;border:1px solid #d6d4e5;border-radius:50%;flex-shrink:0;text-align:center;line-height:20px;font-size:12px}
+.module-link.done .check{background:#ddf7eb;color:#13885c;border-color:#b8ebd3}
+.quiz-box{margin-top:25px;border-top:1px solid var(--border);padding-top:24px}
+.quiz-question{font-weight:750;font-size:18px;margin:16px 0}
+.answer-list{display:grid;gap:10px}
+.answer{
+  text-align:left;background:#fff;border:1px solid var(--border);
+  padding:14px;border-radius:11px;color:var(--text)
+}
+.answer:hover{border-color:#bcb3ff;background:#faf9ff}
+.answer.selected{border-color:var(--primary);background:#f1efff}
+.answer.correct{border-color:#7cd8b2;background:#e7f9f0}
+.answer.wrong{border-color:#f1a4af;background:#fff0f2}
+.feedback{padding:13px;border-radius:11px;margin:14px 0;font-size:14px}
+.feedback.good{background:#e4f8ef;color:#126c4a}
+.feedback.bad{background:#fff0f2;color:#a72f43}
+.quiz-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+.empty-state{padding:40px;text-align:center;color:var(--muted);background:white;border:1px dashed var(--border);border-radius:17px}
+.achievement-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.achievement{background:white;border:1px solid var(--border);border-radius:17px;padding:22px}
+.achievement-icon{font-size:29px;margin-bottom:12px}
+.achievement.locked{opacity:.55;filter:grayscale(.6)}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:18px 0;border-bottom:1px solid var(--border)}
+footer{margin-top:48px;padding:22px 0;border-top:1px solid var(--border);font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.mobile-menu{display:none}
+@media(max-width:1100px){
+ .layout{grid-template-columns:195px minmax(0,1fr)}
+ .subject-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .lesson-layout{grid-template-columns:minmax(0,1fr)}
+ .lesson-side{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .lesson-side .panel{margin:0}
+}
+@media(max-width:720px){
+ .topbar{height:64px;padding:0 16px}
+ .toplinks{gap:12px}
+ .toplinks a{display:none}
+ .layout{display:block}
+ .sidebar{
+  display:none;position:fixed;top:64px;left:0;bottom:0;width:255px;
+  z-index:30;box-shadow:var(--shadow);overflow:auto
+ }
+ .sidebar.open{display:flex}
+ .mobile-menu{display:inline-flex}
+ main{padding:24px 15px}
+ .subject-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .two-col{grid-template-columns:1fr}
+ .achievement-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .section-head{align-items:stretch;flex-direction:column}
+ .searchbar{width:100%}
+}
+@media(max-width:470px){
+ .subject-grid{grid-template-columns:1fr}
+ .stats{gap:10px}
+ .stat{padding:14px}
+ .stat-number{font-size:23px}
+ .hero{border-radius:19px}
+ .lesson-side{grid-template-columns:1fr}
+ .achievement-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:13px">
+    <button class="btn btn-outline mobile-menu" id="menuToggle" aria-label="Menü öffnen">☰</button>
+    <a class="brand" href="#" data-page="home">Lern<span>Up.</span></a>
+  </div>
+  <nav class="toplinks">
+    <a href="#" data-page="courses">Lernbibliothek</a>
+    <a href="#" data-page="progress">Mein Fortschritt</a>
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+  <div class="profile" id="profileLabel">🎓 Gast</div>
+  <button class="btn btn-soft" id="loginButton">Anmelden</button>
+  <button class="btn btn-outline" id="logoutButton" hidden>Abmelden</button>
+</div>
+  </nav>
+</header>
+<div id="authPanel" style="display:none;position:fixed;inset:0;z-index:100;background:#20213a88;padding:20px;overflow:auto">
+  <section class="panel" style="max-width:430px;margin:8vh auto;padding:25px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <h2 id="authTitle">Bei LernUp anmelden</h2>
+      <button class="btn btn-outline" type="button" id="authClose">Schließen</button>
+    </div>
+
+    <p class="muted small">Speichere deinen Lernfortschritt mit deinem Konto auf mehreren Geräten.</p>
+
+    <form id="authForm">
+      <label for="authEmail">E-Mail-Adresse</label>
+      <input id="authEmail" type="email" required autocomplete="email" style="display:block;width:100%;padding:12px;margin:6px 0 14px;border:1px solid var(--border);border-radius:10px">
+
+      <label for="authPassword">Passwort (mindestens 6 Zeichen)</label>
+      <input id="authPassword" type="password" required minlength="6" autocomplete="current-password" style="display:block;width:100%;padding:12px;margin:6px 0 14px;border:1px solid var(--border);border-radius:10px">
+
+      <button class="btn btn-primary" type="submit" id="authSubmit" style="width:100%">Anmelden</button>
+    </form>
+
+    <p id="authMessage" role="status" style="margin-top:12px;font-size:14px"></p>
+
+    <button class="btn btn-soft" type="button" id="authSwitch">Noch kein Konto? Registrieren</button>
+  </section>
+</div>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="side-label">Lernbereich</div>
+  <button class="navbtn active" data-page="home"><span class="nav-icon">⌂</span>Übersicht</button>
+  <button class="navbtn" data-page="courses"><span class="nav-icon">▤</span>Alle Lernkurse</button>
+  <button class="navbtn" data-page="progress"><span class="nav-icon">◔</span>Mein Fortschritt</button>
+  <button class="navbtn" data-page="achievements"><span class="nav-icon">✧</span>Erfolge</button>
+  <div class="side-label">Dein Konto</div>
+  <button class="navbtn" data-page="settings"><span class="nav-icon">⚙</span>Einstellungen</button>
+  <div class="side-note">
+    <strong>💡 LernTipp</strong>
+    <p style="margin:8px 0 0">Lerne regelmäßig in kurzen Einheiten. Wiederhole schwierige Inhalte nach ein paar Tagen.</p>
+  </div>
+</aside>
+
+<main>
+<section class="page active" id="page-home">
+  <div class="hero">
+    <span class="eyebrow" style="color:#e3deff">DEIN DIGITALER LERNRAUM</span>
+    <h1>Verstehe mehr.<br>Erreiche mehr.</h1>
+    <p>Entdecke anspruchsvolle Lerninhalte, festige dein Wissen und bereite dich gezielt auf Tests und Prüfungen vor.</p>
+    <div class="hero-bottom">
+      <button class="btn btn-white" data-page="courses">Lernen starten →</button>
+      <button class="btn btn-ghost" data-page="progress">Fortschritt ansehen</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-top"><span class="muted small">Lernpunkte</span><span class="stat-icon">⭐</span></div><div class="stat-number" id="statPoints">0</div><div class="muted small">Durch richtige Antworten</div></div>
+    <div class="stat"><div class="stat-top"><span class="muted small">Abgeschlossen</span><span class="stat-icon">✅</span></div><div class="stat-number" id="statCompleted">0</div><div class="muted small">Lernmodule</div></div>
+    <div class="stat"><div class="stat-top"><span class="muted small">Bearbeitet</span><span class="stat-icon">📘</span></div><div class="stat-number" id="statStarted">0</div><div class="muted small">Verschiedene Module</div></div>
+    <div class="stat"><div class="stat-top"><span class="muted small">Fächer</span><span class="stat-icon">🧠</span></div><div class="stat-number">9</div><div class="muted small">Wissensgebiete</div></div>
+  </div>
+
+  <div class="section-head">
+    <div><h2>Entdecke deine Fächer</h2><p class="muted">Wähle ein Fach und finde dein nächstes Lernthema.</p></div>
+    <button class="btn btn-soft" data-page="courses">Alle Kurse →</button>
+  </div>
+  <div class="subject-grid" id="homeCourses"></div>
+
+  <div class="two-col">
+    <section class="panel">
+      <div class="panel-title"><h2 style="font-size:20px">Zuletzt gelernt</h2><button class="btn btn-soft" data-page="progress">Alle ansehen</button></div>
+      <div id="recentList"></div>
+    </section>
+    <section class="panel">
+      <div class="panel-title"><h2 style="font-size:20px">Dein Lernziel</h2><span>🎯</span></div>
+      <p class="muted small">Schließe drei Lernmodule ab, um dein erstes Lernziel zu erreichen.</p>
+      <div style="display:flex;justify-content:space-between;margin:20px 0 8px;font-size:13px"><strong>Wochenziel</strong><strong id="goalText">0 / 3</strong></div>
+      <div class="progress-track"><div class="progress-fill" id="goalBar" style="width:0%"></div></div>
+      <p class="muted small" style="margin-top:14px">Tipp: Wiederhole Inhalte, die dir noch schwerfallen.</p>
+    </section>
+  </div>
+</section>
+
+<section class="page" id="page-courses">
+  <span class="eyebrow">LERNBIBLIOTHEK</span>
+  <h1>Finde deinen Lernkurs.</h1>
+  <p class="muted">Wähle ein Fach, suche nach Themen und lerne in deinem eigenen Tempo.</p>
+  <div class="filters">
+    <div class="searchbar" style="flex:1"><span>🔎</span><input id="courseSearch" type="search" placeholder="Fach oder Thema suchen..." aria-label="Lernkurse suchen"></div>
+    <select id="levelFilter" aria-label="Lernniveau">
+      <option value="all">Alle Niveaus</option>
+      <option value="middle">Mittelstufe</option>
+      <option value="upper">Oberstufe</option>
+    </select>
+    <select id="subjectFilter" aria-label="Fach auswählen">
+      <option value="all">Alle Fächer</option>
+    </select>
+  </div>
+  <p class="muted small" id="courseCount"></p>
+  <div class="subject-grid" id="allCourses"></div>
+</section>
+
+<section class="page" id="page-lesson">
+  <button class="btn btn-soft" data-page="courses">← Zurück zur Lernbibliothek</button>
+  <div style="margin:24px 0">
+    <span class="eyebrow" id="lessonSubject">LERNMODUL</span>
+    <h1 id="lessonHeading">Lernmodul</h1>
+    <p class="muted" id="lessonSubtitle"></p>
+  </div>
+  <div class="lesson-layout">
+    <article class="lesson-card">
+      <div class="course-meta"><span id="lessonLevel"></span><span id="lessonDuration"></span></div>
+      <div class="progress-track"><div class="progress-fill" id="lessonProgress" style="width:0%"></div></div>
+      <div class="lesson-body" id="lessonBody"></div>
+      <div class="quiz-box">
+        <span class="eyebrow">WISSENSTEST</span>
+        <h2>Teste dein Verständnis</h2>
+        <p class="muted small">Beantworte die Fragen. Du erhältst direkt Rückmeldung.</p>
+        <div id="quizArea"></div>
+      </div>
+    </article>
+    <aside class="lesson-side">
+      <section class="panel">
+        <h3>In diesem Modul</h3>
+        <ul class="module-list">
+          <li><div class="module-link"><span class="check">1</span><span>Grundlagen verstehen</span></div></li>
+          <li><div class="module-link"><span class="check">2</span><span>Beispiele nachvollziehen</span></div></li>
+          <li><div class="module-link"><span class="check">3</span><span>Wissen überprüfen</span></div></li>
+        </ul>
+        <p class="muted small">Lies die Erklärung und beantworte danach den Wissenstest.</p>
+      </section>
+      <section class="panel">
+        <h3>Dein Ergebnis</h3>
+        <div style="font-size:27px;font-weight:850;margin:10px 0" id="lessonScore">0 Punkte</div>
+        <p class="muted small" id="lessonScoreText">Noch keine Frage beantwortet.</p>
+      </section>
+    </aside>
+  </div>
+</section>
+
+<section class="page" id="page-progress">
+  <span class="eyebrow">DEINE ENTWICKLUNG</span>
+  <h1>Jeder Schritt zählt.</h1>
+  <p class="muted">Hier siehst du deinen gespeicherten Lernfortschritt auf diesem Gerät.</p>
+  <div class="stats">
+    <div class="stat"><div class="muted small">Punkte insgesamt</div><div class="stat-number" id="progressPoints">0</div></div>
+    <div class="stat"><div class="muted small">Abgeschlossen</div><div class="stat-number" id="progressCompleted">0</div></div>
+    <div class="stat"><div class="muted small">Begonnen</div><div class="stat-number" id="progressStarted">0</div></div>
+    <div class="stat"><div class="muted small">Erfolgsquote</div><div class="stat-number" id="progressAccuracy">0%</div></div>
+  </div>
+  <section class="panel">
+    <div class="panel-title"><h2>Deine Lernmodule</h2></div>
+    <div id="progressList"></div>
+  </section>
+</section>
+
+<section class="page" id="page-achievements">
+  <span class="eyebrow">MOTIVATION</span>
+  <h1>Deine Erfolge.</h1>
+  <p class="muted">Jede abgeschlossene Übung bringt dich weiter.</p>
+  <div class="achievement-grid" id="achievementGrid"></div>
+</section>
+
+<section class="page" id="page-settings">
+  <span class="eyebrow">PERSÖNLICHER LERNRAUM</span>
+  <h1>Einstellungen.</h1>
+  <p class="muted">Verwalte deine lokalen Lerninformationen.</p>
+  <section class="panel" style="margin-top:24px">
+    <h2>Deine Lerndaten</h2>
+    <div class="settings-row"><div><strong>Fortschritt speichern</strong><p class="muted small">Deine Ergebnisse bleiben auf diesem Browser gespeichert.</p></div><span>💾</span></div>
+    <div class="settings-row"><div><strong>Offline nutzbar</strong><p class="muted small">Die Inhalte funktionieren ohne Internetverbindung, sobald die Datei vorliegt.</p></div><span>📴</span></div>
+    <div class="settings-row"><div><strong>Lernfortschritt zurücksetzen</strong><p class="muted small">Löscht alle lokal gespeicherten Punkte und Ergebnisse.</p></div><button class="btn btn-outline" id="resetButton">Zurücksetzen</button></div>
+  </section>
+  <section class="panel" style="margin-top:18px">
+    <h2>Über LernUp</h2>
+    <p class="muted" style="margin-top:12px">LernUp ist ein kostenloser Lernplattform-Prototyp. Er bietet erste Lernmodule und interaktive Tests für die Mittel- und Oberstufe. Die Inhalte ersetzen keine offiziellen Schulunterlagen und decken noch nicht sämtliche Lehrpläne ab.</p>
+  </section>
+</section>
+
+<footer><span>© LernUp · Lernen. Verstehen. Weiterkommen.</span><span>Kostenloser Lernprototyp · Version 1.0</span></footer>
+</main>
+</div>
+
+<script>
+const courses = [
+{
+ id:"mathe-funktionen",subject:"Mathematik",icon:"📈",color:"#eeebff",level:"upper",levelLabel:"Oberstufe",duration:15,
+ title:"Funktionen und ihre Eigenschaften",
+ description:"Definitionsbereich, Nullstellen und Verhalten von Funktionen untersuchen.",
+ body:`<h3>1. Was ist eine Funktion?</h3>
+ <p>Eine Funktion ordnet jedem zulässigen Eingabewert genau einen Ausgabewert zu. Man schreibt häufig <em>f(x)</em>. Der Wert x ist die unabhängige Variable; f(x) ist der zugehörige Funktionswert.</p>
+ <div class="definition"><strong>Wichtige Begriffe</strong><br>Definitionsbereich: alle zulässigen x-Werte.<br>Wertebereich: alle tatsächlich auftretenden Funktionswerte.<br>Nullstelle: ein x-Wert, für den f(x) = 0 gilt.</div>
+ <h3>2. Lineare Funktionen</h3>
+ <p>Eine lineare Funktion hat die Form:</p><div class="formula">f(x) = mx + b</div>
+ <p><strong>m</strong> ist die Steigung. <strong>b</strong> ist der Schnittpunkt mit der y-Achse. Bei einer positiven Steigung steigt der Graph nach rechts an; bei einer negativen Steigung fällt er.</p>
+ <h3>3. Nullstellen bestimmen</h3>
+ <p>Setze f(x) = 0 und löse die entstehende Gleichung. Bei f(x) = 2x − 6 erhältst du 2x − 6 = 0, also x = 3.</p>
+ <h3>4. Quadratische Funktionen</h3>
+ <p>Eine quadratische Funktion kann in der Form ax² + bx + c geschrieben werden, wobei a ungleich null ist. Ihr Graph ist eine Parabel. Für a &gt; 0 ist sie nach oben geöffnet, für a &lt; 0 nach unten.</p>
+ <div class="definition"><strong>Merke:</strong> Funktionen lassen sich durch Gleichungen, Tabellen oder Graphen darstellen. Jede Darstellung hilft bei einer anderen Art von Fragestellung.</div>`,
+ quiz:[
+  {q:"Was beschreibt die Steigung m bei f(x) = mx + b?",a:["Den Schnittpunkt mit der y-Achse","Die Veränderung von y pro Veränderung von x","Immer die Nullstelle"],correct:1,why:"Die Steigung beschreibt, um wie viel sich der Funktionswert bei einer Änderung von x verändert."},
+  {q:"Welche Nullstelle hat f(x) = 3x − 12?",a:["x = 4","x = 12","x = −4"],correct:0,why:"3x − 12 = 0 ergibt 3x = 12 und damit x = 4."},
+  {q:"Wie sieht der Graph einer quadratischen Funktion typischerweise aus?",a:["Gerade","Kreis","Parabel"],correct:2,why:"Der Graph einer quadratischen Funktion ist eine Parabel."}
+ ]
+},
+{
+ id:"mathe-ableitung",subject:"Mathematik",icon:"∫",color:"#eeebff",level:"upper",levelLabel:"Oberstufe",duration:20,
+ title:"Einführung in die Ableitung",description:"Steigung, Änderungsrate und einfache Ableitungsregeln verstehen.",
+ body:`<h3>1. Die Idee der Ableitung</h3><p>Die Ableitung beschreibt, wie schnell sich eine Funktion an einer bestimmten Stelle verändert. Geometrisch entspricht sie der Steigung der Tangente am Graphen.</p><div class="formula">f′(x) = momentane Änderungsrate</div><h3>2. Potenzregel</h3><p>Für Potenzen von x gilt die Potenzregel. Der Exponent wird als Faktor nach vorne geschrieben und anschließend um eins verringert.</p><div class="formula">f(x) = xⁿ → f′(x) = n · xⁿ⁻¹</div><p>Beispiel: Aus f(x) = x³ wird f′(x) = 3x². Bei f(x) = 4x² ergibt sich f′(x) = 8x.</p><h3>3. Was verrät die Ableitung?</h3><ul><li>f′(x) &gt; 0: Die Funktion steigt lokal.</li><li>f′(x) &lt; 0: Die Funktion fällt lokal.</li><li>f′(x) = 0: Eine waagrechte Tangente liegt vor; es kann ein Extrempunkt sein.</li></ul><div class="definition"><strong>Achtung:</strong> Nicht jede Stelle mit Ableitung null ist automatisch ein Hoch- oder Tiefpunkt. Das weitere Verhalten muss geprüft werden.</div>`,
+ quiz:[
+  {q:"Was beschreibt die erste Ableitung geometrisch?",a:["Die Fläche unter dem Graphen","Die Steigung der Tangente","Den y-Achsenabschnitt"],correct:1,why:"Die erste Ableitung gibt die Tangentensteigung und damit die momentane Änderungsrate an."},
+  {q:"Was ist die Ableitung von f(x) = x⁴?",a:["4x³","x³","4x⁴"],correct:0,why:"Nach der Potenzregel ist f′(x) = 4x³."},
+  {q:"Was bedeutet f′(x) < 0 in einem Bereich?",a:["Die Funktion steigt","Die Funktion ist immer null","Die Funktion fällt"],correct:2,why:"Eine negative Ableitung bedeutet, dass die Funktion in diesem Bereich fällt."}
+ ]
+},
+{
+ id:"deutsch-analyse",subject:"Deutsch",icon:"📖",color:"#ffeaf0",level:"upper",levelLabel:"Oberstufe",duration:18,
+ title:"Literarische Texte analysieren",description:"Erzählperspektive, Sprache und Wirkung systematisch untersuchen.",
+ body:`<h3>1. Analyse statt Inhaltsangabe</h3><p>Eine literarische Analyse erklärt nicht nur, was passiert, sondern untersucht, wie ein Text gestaltet ist und welche Wirkung seine Gestaltung erzeugt.</p><div class="definition"><strong>Grundprinzip:</strong> Behauptung → Textbeleg → Erklärung der Wirkung.</div><h3>2. Erzählperspektive</h3><p>Ein auktorialer Erzähler kann das Geschehen kommentieren und mehr wissen als einzelne Figuren. Ein personaler Erzähler vermittelt Ereignisse durch die Wahrnehmung einer Figur. Ein Ich-Erzähler berichtet aus seiner eigenen Perspektive und ist nicht automatisch allwissend.</p><h3>3. Sprachliche Mittel</h3><ul><li><strong>Metapher:</strong> bildhafte Übertragung einer Bedeutung.</li><li><strong>Vergleich:</strong> Verknüpfung zweier Bereiche, oft mit „wie“ oder „als“.</li><li><strong>Wiederholung:</strong> hebt Begriffe oder Gedanken hervor.</li><li><strong>Antithese:</strong> stellt Gegensätze gegenüber.</li></ul><h3>4. Wirkung belegen</h3><p>Schreibe nicht nur „Der Autor verwendet eine Metapher“. Erkläre, welches Bild entsteht und wie es Stimmung, Figur oder Thema beeinflusst. Zitiere präzise und ordne Belege in deinen Gedankengang ein.</p><div class="definition"><strong>Merke:</strong> Ein sprachliches Mittel ist erst dann sinnvoll analysiert, wenn seine Funktion im konkreten Text erklärt wird.</div>`,
+ quiz:[
+  {q:"Was gehört zu einer überzeugenden Textanalyse?",a:["Nur die Handlung nacherzählen","Sprachliches Mittel benennen und seine Wirkung belegen","Die eigene Meinung ohne Textbelege"],correct:1,why:"Eine Analyse verbindet Beobachtung, Textbeleg und Erklärung der Wirkung."},
+  {q:"Was kennzeichnet einen personalen Erzähler?",a:["Er vermittelt das Geschehen aus der Wahrnehmung einer Figur","Er kennt immer alle Gedanken aller Figuren","Er spricht immer den Leser direkt an"],correct:0,why:"Die Darstellung ist an die Wahrnehmung einer bestimmten Figur gebunden."},
+  {q:"Was ist eine Antithese?",a:["Eine genaue Zeitangabe","Eine Wortneuschöpfung","Die Gegenüberstellung von Gegensätzen"],correct:2,why:"Eine Antithese stellt gegensätzliche Begriffe oder Gedanken gegenüber."}
+ ]
+},
+{
+ id:"englisch-grammar",subject:"Englisch",icon:"🌐",color:"#e5f3ff",level:"middle",levelLabel:"Mittelstufe",duration:15,
+ title:"Conditional sentences",description:"Bedingungssätze unterscheiden und korrekt anwenden.",
+ body:`<h3>1. Wozu dienen conditionals?</h3><p>Conditional sentences beschreiben Bedingungen und ihre Folgen. Welche Zeitform verwendet wird, hängt davon ab, ob die Bedingung allgemein, realistisch, hypothetisch oder vergangen ist.</p><h3>2. Zero conditional</h3><div class="formula">If + present simple, present simple</div><p>Für allgemeine Tatsachen: <em>If you heat ice, it melts.</em></p><h3>3. First conditional</h3><div class="formula">If + present simple, will + infinitive</div><p>Für eine reale Möglichkeit in der Zukunft: <em>If it rains, we will stay at home.</em> Nach if steht in diesem Satz normalerweise nicht will.</p><h3>4. Second conditional</h3><div class="formula">If + past simple, would + infinitive</div><p>Für hypothetische oder unwahrscheinliche Situationen: <em>If I had more time, I would travel.</em> Die Vergangenheitsform drückt hier Distanz zur Realität aus, nicht zwingend Vergangenheit.</p><h3>5. Häufige Fehler</h3><p>Vermeide „If it will rain“. Für die übliche First-conditional-Konstruktion heißt es: „If it rains, we will ...“</p>`,
+ quiz:[
+  {q:"Choose the correct sentence.",a:["If it will rain, we stay home.","If it rains, we will stay home.","If it rain, we will stay home."],correct:1,why:"Im if-Satz des First Conditional steht das Present Simple."},
+  {q:"Which conditional describes a general fact?",a:["Zero conditional","Second conditional","Third conditional"],correct:0,why:"Das Zero Conditional beschreibt allgemeine Tatsachen und Regelmäßigkeiten."},
+  {q:"Complete: If I were rich, I ___ around the world.",a:["will travel","travel","would travel"],correct:2,why:"Das Second Conditional verwendet would plus Grundform."}
+ ]
+},
+{
+ id:"bio-genetik",subject:"Biologie",icon:"🧬",color:"#e3f7ec",level:"upper",levelLabel:"Oberstufe",duration:20,
+ title:"Genetik und DNA",description:"DNA, Gene, Proteine und Vererbung im Zusammenhang verstehen.",
+ body:`<h3>1. Aufbau der DNA</h3><p>Die DNA speichert genetische Information. Sie besteht aus Nukleotiden und liegt in Form einer Doppelhelix vor. Die Basen paaren sich komplementär: Adenin mit Thymin und Guanin mit Cytosin.</p><div class="formula">A – T &nbsp; | &nbsp; G – C</div><h3>2. Gene und Chromosomen</h3><p>Ein Gen ist ein DNA-Abschnitt, der ein funktionelles Produkt codiert, beispielsweise ein Protein oder eine funktionelle RNA. Chromosomen bestehen aus DNA und Proteinen. Beim Menschen liegen in den meisten Körperzellen 46 Chromosomen vor.</p><h3>3. Vom Gen zum Protein</h3><p>Bei der Transkription wird die Information eines DNA-Abschnitts in RNA übertragen. Bei der Translation wird die Information der mRNA an Ribosomen zur Herstellung eines Proteins verwendet.</p><div class="definition"><strong>DNA → RNA → Protein</strong><br>Dieses vereinfachte Schema beschreibt einen zentralen Informationsfluss der molekularen Biologie.</div><h3>4. Mutationen</h3><p>Mutationen sind Veränderungen des Erbguts. Ihre Auswirkungen reichen von neutralen Veränderungen bis zu Folgen für Proteine oder die Regulation von Genen. Mutationen sind eine wichtige Quelle genetischer Variation.</p>`,
+ quiz:[
+  {q:"Welche Basen paaren sich in der DNA?",a:["A–G und C–T","A–T und G–C","A–C und G–T"],correct:1,why:"In der DNA paart Adenin mit Thymin und Guanin mit Cytosin."},
+  {q:"Was geschieht bei der Transkription?",a:["DNA-Information wird in RNA übertragen","Ein Protein wird direkt zu DNA","Chromosomen verschwinden"],correct:0,why:"Bei der Transkription wird RNA anhand einer DNA-Vorlage hergestellt."},
+  {q:"Was ist eine Mutation?",a:["Immer eine Krankheit","Eine normale Zellteilung","Eine Veränderung des Erbguts"],correct:2,why:"Mutationen verändern die DNA-Sequenz oder andere Bestandteile des Erbguts."}
+ ]
+},
+{
+ id:"chemie-redox",subject:"Chemie",icon:"⚗️",color:"#fff0dd",level:"upper",levelLabel:"Oberstufe",duration:18,
+ title:"Redoxreaktionen verstehen",description:"Oxidation, Reduktion und Elektronenübertragung erkennen.",
+ body:`<h3>1. Was ist eine Redoxreaktion?</h3><p>Bei einer Redoxreaktion laufen Oxidation und Reduktion gekoppelt ab. Elektronen werden von einem Reaktionspartner auf einen anderen übertragen.</p><div class="definition"><strong>Oxidation:</strong> Abgabe von Elektronen.<br><strong>Reduktion:</strong> Aufnahme von Elektronen.</div><h3>2. Beispiel mit Magnesium und Sauerstoff</h3><p>Magnesium reagiert mit Sauerstoff zu Magnesiumoxid. Magnesium gibt Elektronen ab und wird oxidiert; Sauerstoff nimmt Elektronen auf und wird reduziert.</p><div class="formula">2 Mg + O₂ → 2 MgO</div><h3>3. Oxidationszahlen</h3><p>Oxidationszahlen helfen, Elektronenverschiebungen in Reaktionen zu verfolgen. Steigt die Oxidationszahl eines Atoms, liegt Oxidation vor. Sinkt sie, liegt Reduktion vor.</p><h3>4. Oxidations- und Reduktionsmittel</h3><p>Das Reduktionsmittel gibt Elektronen ab und wird selbst oxidiert. Das Oxidationsmittel nimmt Elektronen auf und wird selbst reduziert.</p><div class="definition"><strong>Merksatz:</strong> Oxidation und Reduktion treten bei einer Redoxreaktion immer gemeinsam auf.</div>`,
+ quiz:[
+  {q:"Was geschieht bei einer Oxidation?",a:["Elektronen werden aufgenommen","Elektronen werden abgegeben","Protonen verschwinden immer"],correct:1,why:"Oxidation ist die Abgabe von Elektronen."},
+  {q:"Was passiert mit der Oxidationszahl bei einer Reduktion?",a:["Sie sinkt","Sie steigt immer","Sie bleibt zwingend gleich"],correct:0,why:"Bei einer Reduktion sinkt die Oxidationszahl."},
+  {q:"Welche Aussage über Redoxreaktionen ist richtig?",a:["Es gibt nur Oxidation","Elektronen spielen keine Rolle","Oxidation und Reduktion sind gekoppelt"],correct:2,why:"Die Elektronenabgabe eines Partners ist mit der Elektronenaufnahme eines anderen verbunden."}
+ ]
+},
+{
+ id:"physik-elektrizitaet",subject:"Physik",icon:"⚡",color:"#fff5d9",level:"upper",levelLabel:"Oberstufe",duration:20,
+ title:"Elektrische Spannung und Strom",description:"Stromstärke, Spannung und Widerstand mit dem Ohmschen Gesetz verknüpfen.",
+ body:`<h3>1. Stromstärke</h3><p>Die elektrische Stromstärke beschreibt, wie viel elektrische Ladung pro Zeit durch einen Querschnitt fließt. Ihre Einheit ist Ampere (A).</p><h3>2. Spannung</h3><p>Die elektrische Spannung beschreibt die Energieübertragung pro Ladungsmenge zwischen zwei Punkten. Ihre Einheit ist Volt (V).</p><h3>3. Ohmsches Gesetz</h3><div class="formula">U = R · I</div><p>U ist die Spannung in Volt, R der Widerstand in Ohm und I die Stromstärke in Ampere. Die Formel gilt für ohmsche Leiter unter entsprechenden konstanten Bedingungen.</p><p>Beispiel: Bei R = 6 Ω und I = 2 A beträgt die Spannung U = 12 V.</p><h3>4. Elektrische Leistung</h3><div class="formula">P = U · I</div><p>Die elektrische Leistung wird in Watt (W) gemessen. Mit dem Ohmschen Gesetz lassen sich weitere Formen ableiten, etwa P = I²R für einen ohmschen Widerstand.</p><div class="definition"><strong>Beim Rechnen:</strong> Schreibe die gegebenen Größen mit Einheiten auf, wähle die passende Formel und überprüfe, ob die Einheit des Ergebnisses sinnvoll ist.</div>`,
+ quiz:[
+  {q:"Ein Widerstand von 4 Ω wird von 3 A durchflossen. Wie groß ist U?",a:["12 V","7 V","1,33 V"],correct:0,why:"U = R · I = 4 Ω · 3 A = 12 V."},
+  {q:"Welche Einheit hat die Stromstärke?",a:["Volt","Ampere","Ohm"],correct:1,why:"Die Stromstärke wird in Ampere gemessen."},
+  {q:"Wie lautet die Formel für elektrische Leistung?",a:["P = U · I","P = U + I","P = R / I"],correct:0,why:"Die elektrische Leistung ergibt sich aus Spannung mal Stromstärke."}
+ ]
+},
+{
+ id:"geschichte-industrialisierung",subject:"Geschichte",icon:"🏛️",color:"#fbe9dd",level:"middle",levelLabel:"Mittelstufe",duration:16,
+ title:"Die Industrielle Revolution",description:"Technische Umbrüche und ihre gesellschaftlichen Folgen einordnen.",
+ body:`<h3>1. Ein tiefgreifender Wandel</h3><p>Die Industrielle Revolution begann in Großbritannien im 18. Jahrhundert und breitete sich später in anderen Regionen aus. Produktion und Arbeit veränderten sich durch Maschinen, Fabriken und neue Energiequellen grundlegend.</p><h3>2. Technische Entwicklungen</h3><p>Dampfmaschinen, mechanisierte Textilproduktion und Verbesserungen im Transportwesen ermöglichten größere Produktionsmengen und neue Handelsverbindungen. Die Entwicklung verlief je nach Region und Branche unterschiedlich.</p><h3>3. Urbanisierung und Arbeit</h3><p>Viele Menschen zogen auf der Suche nach Arbeit in Städte. Fabrikarbeit war häufig von langen Arbeitszeiten, niedrigen Löhnen und gefährlichen Bedingungen geprägt. Kinderarbeit war in vielen frühen Industriegebieten verbreitet.</p><h3>4. Gesellschaftliche Reaktionen</h3><p>Gewerkschaften, Arbeiterbewegungen und politische Reformen entstanden unter anderem als Reaktion auf soziale Ungleichheit. Arbeits- und Sozialgesetze wurden über lange Zeiträume ausgehandelt und eingeführt.</p><div class="definition"><strong>Historisch denken:</strong> Unterscheide Ursachen, Verlauf und Folgen. Berücksichtige dabei, welche Gruppen von Veränderungen profitierten und welche Nachteile erfuhren.</div>`,
+ quiz:[
+  {q:"Wo begann die Industrielle Revolution?",a:["Im antiken Rom","In Großbritannien","In Australien"],correct:1,why:"Die Industrielle Revolution begann im 18. Jahrhundert in Großbritannien."},
+  {q:"Welche Folge hatte die Industrialisierung?",a:["Urbanisierung und Wachstum von Industriestädten","Das Ende des Handels","Die vollständige Abschaffung aller Maschinen"],correct:0,why:"Die industrielle Produktion förderte das Wachstum vieler Städte."},
+  {q:"Warum entstanden Arbeiterbewegungen?",a:["Um Fabriken schneller zu bauen","Um Maschinen grundsätzlich abzuschaffen","Unter anderem als Reaktion auf schlechte Arbeitsbedingungen"],correct:2,why:"Arbeiterbewegungen setzten sich unter anderem für bessere Arbeitsbedingungen und Rechte ein."}
+ ]
+},
+{
+ id:"geo-klimawandel",subject:"Geografie",icon:"🌍",color:"#ddf5ed",level:"upper",levelLabel:"Oberstufe",duration:18,
+ title:"Klimawandel und globale Folgen",description:"Treibhauseffekt, Ursachen und unterschiedliche Auswirkungen untersuchen.",
+ body:`<h3>1. Natürlicher Treibhauseffekt</h3><p>Die Atmosphäre lässt einen großen Teil der kurzwelligen Sonnenstrahlung passieren. Die Erdoberfläche gibt Energie als Wärmestrahlung ab. Treibhausgase nehmen einen Teil dieser Strahlung auf und geben Energie in verschiedene Richtungen wieder ab.</p><h3>2. Menschlicher Einfluss</h3><p>Durch die Verbrennung fossiler Energieträger, Entwaldung und bestimmte landwirtschaftliche Prozesse steigen die Konzentrationen wichtiger Treibhausgase. Dadurch wird der natürliche Treibhauseffekt verstärkt.</p><div class="definition"><strong>Begriffe unterscheiden:</strong> Wetter beschreibt kurzfristige atmosphärische Bedingungen. Klima beschreibt typische Muster und Schwankungen über längere Zeiträume.</div><h3>3. Globale Auswirkungen</h3><p>Zu den beobachteten und erwarteten Folgen zählen der Anstieg des Meeresspiegels, Veränderungen von Niederschlagsmustern, häufigere oder intensivere bestimmte Extremereignisse und Belastungen für Ökosysteme. Die Risiken unterscheiden sich regional.</p><h3>4. Anpassung und Klimaschutz</h3><p>Klimaschutz reduziert Treibhausgasemissionen oder stärkt Kohlenstoffsenken. Anpassung verringert Schäden durch bereits eintretende oder erwartete Klimafolgen, etwa durch Hitzeschutz, Küstenschutz und angepasste Wasserplanung.</p><div class="definition"><strong>Geografische Analyse:</strong> Untersuche Ursachen, räumliche Verteilung, betroffene Gruppen und mögliche Maßnahmen. Klimarisiken hängen sowohl von Gefahren als auch von Exposition und Verwundbarkeit ab.</div>`,
+ quiz:[
+  {q:"Was verstärkt den anthropogenen Treibhauseffekt?",a:["Mehr Treibhausgase durch menschliche Aktivitäten","Der Wechsel von Tag und Nacht","Die Erdrotation"],correct:0,why:"Menschliche Aktivitäten erhöhen die Konzentration wichtiger Treibhausgase."},
+  {q:"Was bedeutet Klimaanpassung?",a:["Alle Emissionen sofort auf null setzen","Maßnahmen gegen Folgen des Klimawandels ergreifen","Wetter und Klima gleichsetzen"],correct:1,why:"Anpassung soll Schäden durch gegenwärtige und erwartete Klimafolgen verringern."},
+  {q:"Worin unterscheiden sich Wetter und Klima?",a:["Sie bedeuten dasselbe","Klima gilt nur für Städte","Wetter ist kurzfristig, Klima beschreibt längerfristige Muster"],correct:2,why:"Klima beschreibt längerfristige statistische Eigenschaften des Wetters."}
+ ]
+},
+{
+ id:"info-algorithmen",subject:"Informatik",icon:"💻",color:"#e9eaff",level:"upper",levelLabel:"Oberstufe",duration:20,
+ title:"Algorithmen und Programmierlogik",description:"Sequenzen, Bedingungen und Schleifen verstehen.",
+ body:`<h3>1. Was ist ein Algorithmus?</h3><p>Ein Algorithmus ist eine eindeutig beschriebene Folge von Schritten zur Lösung einer Klasse von Problemen. Ein Algorithmus verarbeitet Eingaben und erzeugt nach festgelegten Regeln Ausgaben.</p><h3>2. Sequenz</h3><p>Bei einer Sequenz werden Anweisungen nacheinander ausgeführt. Die Reihenfolge kann entscheidend sein, etwa wenn eine Variable erst einen Wert erhalten muss, bevor sie verwendet wird.</p><h3>3. Bedingungen</h3><p>Eine Bedingung ermöglicht unterschiedliche Abläufe. Beispielsweise: Wenn die Temperatur unter null Grad liegt, gib eine Frostwarnung aus; andernfalls gib eine andere Meldung aus.</p><div class="formula">if Bedingung:<br>&nbsp;&nbsp;Anweisung A<br>else:<br>&nbsp;&nbsp;Anweisung B</div><h3>4. Schleifen</h3><p>Schleifen wiederholen Anweisungen. Eine for-Schleife eignet sich häufig für eine festgelegte Anzahl von Wiederholungen. Eine while-Schleife läuft, solange ihre Bedingung erfüllt ist.</p><h3>5. Fehler und Tests</h3><p>Syntaxfehler verletzen Regeln der Programmiersprache. Laufzeitfehler treten während der Ausführung auf. Logische Fehler führen zu falschen Ergebnissen, obwohl das Programm ausgeführt wird.</p><div class="definition"><strong>Gute Praxis:</strong> Zerlege komplexe Aufgaben in kleinere Teile, verwende aussagekräftige Namen und teste auch Randfälle.</div>`,
+ quiz:[
+  {q:"Wofür wird eine Bedingung in einem Algorithmus verwendet?",a:["Um eine Entscheidung im Ablauf zu treffen","Um jede Anweisung endlos zu wiederholen","Um Daten grundsätzlich zu löschen"],correct:0,why:"Eine Bedingung steuert, welcher von mehreren möglichen Abläufen ausgeführt wird."},
+  {q:"Was beschreibt eine Schleife?",a:["Eine Fehlermeldung","Die Wiederholung von Anweisungen","Nur eine Variable"],correct:1,why:"Eine Schleife führt Anweisungen wiederholt aus."},
+  {q:"Was ist ein logischer Fehler?",a:["Immer ein fehlendes Semikolon","Ein ausgeschalteter Bildschirm","Ein Programm liefert ein falsches Ergebnis trotz Ausführung"],correct:2,why:"Logische Fehler betreffen die Funktionsweise oder die verwendete Lösungslogik."}
+ ]
+}
+];
+
+const subjectInfo = {
+ "Mathematik":{icon:"📈",color:"#eeebff",desc:"Funktionen, Analysis und mathematisches Denken."},
+ "Deutsch":{icon:"📖",color:"#ffeaf0",desc:"Literatur, Textanalyse und Sprache."},
+ "Englisch":{icon:"🌐",color:"#e5f3ff",desc:"Grammatik, Textverständnis und Kommunikation."},
+ "Biologie":{icon:"🧬",color:"#e3f7ec",desc:"Genetik, Evolution und lebende Systeme."},
+ "Chemie":{icon:"⚗️",color:"#fff0dd",desc:"Stoffe, Reaktionen und chemische Grundlagen."},
+ "Physik":{icon:"⚡",color:"#fff5d9",desc:"Naturgesetze, Elektrizität und Bewegung."},
+ "Geschichte":{icon:"🏛️",color:"#fbe9dd",desc:"Historische Umbrüche und ihre Folgen."},
+ "Geografie":{icon:"🌍",color:"#ddf5ed",desc:"Klima, Räume und globale Zusammenhänge."},
+ "Informatik":{icon:"💻",color:"#e9eaff",desc:"Algorithmen, Programmierung und Systeme."}
+};
+const SUPABASE_URL = "https://mnvneubbduqlrxzcwxev.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_wGxGI1FpEYg0U8PkxQAncA_1lxBVrzJ";
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+let currentUser = null;
+let cloudSaveTimer = null;
+let authMode = "login";
+const STORAGE_KEY="lernup-progress-v1";
+function freshState(){
+ return {points:0,completed:[],started:[],correct:0,answered:0,results:{},recent:[]};
+}
+function loadState(){
+ try{
+  const saved=localStorage.getItem(STORAGE_KEY);
+  if(!saved)return freshState();
+  const parsed=JSON.parse(saved);
+  return {...freshState(),...parsed,results:parsed.results||{},recent:parsed.recent||[]};
+ }catch(e){return freshState();}
+}
+let state=loadState();
+let currentCourse=null;
+let quizIndex=0;
+let selectedAnswer=null;
+let quizScore=0;
+let quizFinished=false;
+let currentQuizAnswered=false;
+
+function saveState(){
+ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+ catch(e){console.warn("Lernfortschritt konnte nicht gespeichert werden.",e);}
+}
+function esc(value){
+ return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function courseById(id){return courses.find(c=>c.id===id);}
+function completed(id){return state.completed.includes(id);}
+function started(id){return state.started.includes(id);}
+function courseProgress(c){
+ if(completed(c.id))return 100;
+ const r=state.results[c.id];
+ if(!r||!r.total)return 0;
+ return Math.min(95,Math.round(r.answered/r.total*100));
+}
+function cardHTML(c){
+ const s=subjectInfo[c.subject];
+ const pct=courseProgress(c);
+ return `<article class="course-card">
+  <div class="course-top">
+   <div class="course-icon" style="background:${s.color}">${s.icon}</div>
+   <span class="tag">${c.levelLabel}</span>
+  </div>
+  <h3>${esc(c.title)}</h3>
+  <p>${esc(c.description)}</p>
+  <div class="course-meta"><span>${s.icon} ${esc(c.subject)}</span><span>◷ ${c.duration} Min.</span></div>
+  <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+  <div class="course-meta"><span>${completed(c.id)?"Abgeschlossen":started(c.id)?"In Bearbeitung":"Noch nicht begonnen"}</span><span>${pct}%</span></div>
+  <button class="btn btn-soft" data-course="${c.id}">${completed(c.id)?"Wiederholen":"Lernmodul öffnen"} →</button>
+ </article>`;
+}
+function renderCourseCards(containerId,list){
+ const el=document.getElementById(containerId);
+ if(!list.length){
+  el.innerHTML='<div class="empty-state" style="grid-column:1/-1">Keine passenden Lernkurse gefunden. Ändere deine Suche oder Filter.</div>';
+  return;
+ }
+ el.innerHTML=list.map(cardHTML).join("");
+}
+function renderHome(){
+ renderCourseCards("homeCourses",courses.slice(0,6));
+ document.getElementById("statPoints").textContent=state.points;
+ document.getElementById("statCompleted").textContent=state.completed.length;
+ document.getElementById("statStarted").textContent=state.started.length;
+ const weekly=Math.min(3,state.completed.length);
+ document.getElementById("goalText").textContent=weekly+" / 3";
+ document.getElementById("goalBar").style.width=(weekly/3*100)+"%";
+ const recent=state.recent.map(courseById).filter(Boolean).slice(0,4);
+ document.getElementById("recentList").innerHTML=recent.length?recent.map(c=>`
+  <div class="activity">
+   <div class="activity-icon">${subjectInfo[c.subject].icon}</div>
+   <div class="activity-copy"><strong>${esc(c.title)}</strong><span>${esc(c.subject)} · ${completed(c.id)?"Abgeschlossen":"Zuletzt geöffnet"}</span></div>
+   <button class="btn btn-soft" data-course="${c.id}" aria-label="Lernmodul öffnen">→</button>
+  </div>`).join(""):'<div class="empty-state">Du hast noch kein Modul geöffnet.<br>Wähle ein Fach und beginne deine Lernreise.</div>';
+}
+function renderFilters(){
+ const subjects=[...new Set(courses.map(c=>c.subject))];
+ document.getElementById("subjectFilter").innerHTML='<option value="all">Alle Fächer</option>'+subjects.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join("");
+}
+function renderAllCourses(){
+ const q=document.getElementById("courseSearch").value.trim().toLocaleLowerCase("de");
+ const level=document.getElementById("levelFilter").value;
+ const subject=document.getElementById("subjectFilter").value;
+ const list=courses.filter(c=>
+  (level==="all"||c.level===level)&&
+  (subject==="all"||c.subject===subject)&&
+  [c.title,c.subject,c.description,c.levelLabel].some(v=>v.toLocaleLowerCase("de").includes(q))
+ );
+ document.getElementById("courseCount").textContent=list.length+" Lernmodul"+(list.length===1?"":"e");
+ renderCourseCards("allCourses",list);
+}
+function showPage(name){
+ const target=document.getElementById("page-"+name);
+ if(!target)return;
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ target.classList.add("active");
+ document.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active",b.dataset.page===name));
+ document.getElementById("sidebar").classList.remove("open");
+ if(name==="home")renderHome();
+ if(name==="courses")renderAllCourses();
+ if(name==="progress")renderProgress();
+ if(name==="achievements")renderAchievements();
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function openCourse(id){
+ const c=courseById(id);
+ if(!c)return;
+ currentCourse=c;
+ if(!started(id))state.started.push(id);
+ state.recent=[id,...state.recent.filter(x=>x!==id)].slice(0,8);
+ saveState();
+ document.getElementById("lessonSubject").textContent=c.subject.toUpperCase()+" · "+c.levelLabel.toUpperCase();
+ document.getElementById("lessonHeading").textContent=c.title;
+ document.getElementById("lessonSubtitle").textContent=c.description;
+ document.getElementById("lessonLevel").textContent="🎓 "+c.levelLabel;
+ document.getElementById("lessonDuration").textContent="◷ "+c.duration+" Minuten";
+ document.getElementById("lessonBody").innerHTML=c.body;
+ quizIndex=0;selectedAnswer=null;quizScore=0;quizFinished=false;currentQuizAnswered=false;
+ renderQuiz();
+ showPage("lesson");
+}
+function renderQuiz(){
+ const c=currentCourse;
+ if(!c)return;
+ const area=document.getElementById("quizArea");
+ document.getElementById("lessonProgress").style.width=(quizFinished?100:quizIndex/c.quiz.length*100)+"%";
+ document.getElementById("lessonScore").textContent=quizScore+" Punkte";
+ document.getElementById("lessonScoreText").textContent=quizFinished?"Test abgeschlossen.": "Beantworte die Fragen, um Punkte zu sammeln.";
+ if(quizFinished){
+  const passed=quizScore>=c.quiz.length*10*0.67;
+  area.innerHTML=`<div class="feedback ${passed?"good":"bad"}"><strong>${passed?"Gut gemacht!":"Weiter üben!"}</strong><br>Du hast ${quizScore/10} von ${c.quiz.length} Fragen richtig beantwortet (${Math.round(quizScore/(c.quiz.length*10)*100)}%). ${passed?"Dieses Modul wurde abgeschlossen.":"Du kannst das Modul wiederholen, um dein Wissen zu festigen."}</div><button class="btn btn-primary" data-action="repeat">Test wiederholen</button> <button class="btn btn-soft" data-page="courses">Andere Kurse entdecken</button>`;
+  return;
+ }
+ const q=c.quiz[quizIndex];
+ area.innerHTML=`<div class="course-meta"><span>Frage ${quizIndex+1} von ${c.quiz.length}</span><span>${quizScore} Punkte</span></div>
+ <div class="quiz-question">${esc(q.q)}</div>
+ <div class="answer-list">${q.a.map((a,i)=>`<button class="answer" data-answer="${i}" ${currentQuizAnswered?"disabled":""}>${String.fromCharCode(65+i)}. ${esc(a)}</button>`).join("")}</div>
+ <div id="quizFeedback"></div>
+ <div class="quiz-footer"><span class="muted small">Eine Antwort auswählen</span><button class="btn btn-primary" data-action="next" ${currentQuizAnswered?"":"disabled"}>${quizIndex===c.quiz.length-1?"Ergebnis ansehen":"Nächste Frage"} →</button></div>`;
+}
+function answerQuestion(index){
+ if(currentQuizAnswered||quizFinished||!currentCourse)return;
+ currentQuizAnswered=true;
+ selectedAnswer=index;
+ const q=currentCourse.quiz[quizIndex];
+ const correct=index===q.correct;
+ state.answered++;
+ if(correct){quizScore+=10;state.points+=10;state.correct++;}
+ state.results[currentCourse.id]=state.results[currentCourse.id]||{answered:0,total:currentCourse.quiz.length,score:0};
+ state.results[currentCourse.id].answered=Math.max(state.results[currentCourse.id].answered,quizIndex+1);
+ state.results[currentCourse.id].total=currentCourse.quiz.length;
+ state.results[currentCourse.id].score=quizScore;
+ saveState();
+ const buttons=document.querySelectorAll("#quizArea [data-answer]");
+ buttons.forEach((b,i)=>{
+  b.disabled=true;
+  if(i===q.correct)b.classList.add("correct");
+  else if(i===index)b.classList.add("wrong");
+ });
+ const feedback=document.getElementById("quizFeedback");
+ feedback.innerHTML=`<div class="feedback ${correct?"good":"bad"}"><strong>${correct?"Richtig! +10 Punkte":"Leider nicht richtig."}</strong><br>${esc(q.why)}</div>`;
+ const next=document.querySelector('#quizArea [data-action="next"]');
+ if(next)next.disabled=false;
+ document.getElementById("lessonScore").textContent=quizScore+" Punkte";
+ document.getElementById("lessonScoreText").textContent=(quizIndex+1)+" von "+currentCourse.quiz.length+" Fragen bearbeitet.";
+ renderHome();
+}
+function nextQuestion(){
+ if(!currentCourse)return;
+ if(!currentQuizAnswered)return;
+ if(quizIndex<currentCourse.quiz.length-1){
+  quizIndex++;selectedAnswer=null;currentQuizAnswered=false;renderQuiz();
+ }else{
+  quizFinished=true;
+  const result=state.results[currentCourse.id]||{answered:currentCourse.quiz.length,total:currentCourse.quiz.length,score:quizScore};
+  result.answered=currentCourse.quiz.length;
+  result.total=currentCourse.quiz.length;
+  result.score=quizScore;
+  state.results[currentCourse.id]=result;
+  if(quizScore>=currentCourse.quiz.length*10*0.67&&!state.completed.includes(currentCourse.id)){
+   state.completed.push(currentCourse.id);
+  }
+  saveState();
+  renderQuiz();renderHome();
+ }
+}
+function renderProgress(){
+ document.getElementById("progressPoints").textContent=state.points;
+ document.getElementById("progressCompleted").textContent=state.completed.length;
+ document.getElementById("progressStarted").textContent=state.started.length;
+ document.getElementById("progressAccuracy").textContent=(state.answered?Math.round(state.correct/state.answered*100):0)+"%";
+ const list=document.getElementById("progressList");
+ const learned=courses.filter(c=>started(c.id));
+ list.innerHTML=learned.length?learned.map(c=>`<div class="activity">
+  <div class="activity-icon">${subjectInfo[c.subject].icon}</div>
+  <div class="activity-copy"><strong>${esc(c.title)}</strong><span>${esc(c.subject)} · ${completed(c.id)?"Abgeschlossen":"In Bearbeitung"}</span><div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="width:${courseProgress(c)}%"></div></div></div>
+  <button class="btn btn-soft" data-course="${c.id}">Öffnen →</button>
+ </div>`).join(""):'<div class="empty-state">Hier erscheinen deine Lernmodule, sobald du eines öffnest.</div>';
+}
+function renderAchievements(){
+ const defs=[
+  {icon:"🌱",name:"Erster Schritt",desc:"Öffne dein erstes Lernmodul.",unlocked:state.started.length>=1},
+  {icon:"🧠",name:"Wissenssammler",desc:"Beantworte zehn Fragen richtig.",unlocked:state.correct>=10},
+  {icon:"🏆",name:"Dranbleiber",desc:"Schließe drei Lernmodule ab.",unlocked:state.completed.length>=3},
+  {icon:"⭐",name:"Punktesammler",desc:"Erreiche 50 Lernpunkte.",unlocked:state.points>=50},
+  {icon:"📚",name:"Vielseitig",desc:"Beginne Lernmodule in drei Fächern.",unlocked:new Set(state.started.map(id=>courseById(id)?.subject).filter(Boolean)).size>=3},
+  {icon:"🎯",name:"Ziel erreicht",desc:"Schließe ein Modul mit mindestens 67 % ab.",unlocked:state.completed.length>=1}
+ ];
+ document.getElementById("achievementGrid").innerHTML=defs.map(a=>`<article class="achievement ${a.unlocked?"":"locked"}"><div class="achievement-icon">${a.icon}</div><h3>${a.name} ${a.unlocked?"✓":"🔒"}</h3><p class="muted small">${a.desc}</p><span class="tag">${a.unlocked?"Freigeschaltet":"Noch gesperrt"}</span></article>`).join("");
+}
+document.addEventListener("click",e=>{
+ const pageButton=e.target.closest("[data-page]");
+ if(pageButton){e.preventDefault();showPage(pageButton.dataset.page);return;}
+ const courseButton=e.target.closest("[data-course]");
+ if(courseButton){openCourse(courseButton.dataset.course);return;}
+ const answer=e.target.closest("[data-answer]");
+ if(answer){answerQuestion(Number(answer.dataset.answer));return;}
+ const action=e.target.closest("[data-action]");
+ if(action){
+  if(action.dataset.action==="next")nextQuestion();
+  if(action.dataset.action==="repeat"){
+   quizIndex=0;selectedAnswer=null;quizScore=0;quizFinished=false;currentQuizAnswered=false;renderQuiz();
+  }
+ }
+});
+document.getElementById("courseSearch").addEventListener("input",renderAllCourses);
+document.getElementById("levelFilter").addEventListener("change",renderAllCourses);
+document.getElementById("subjectFilter").addEventListener("change",renderAllCourses);
+document.getElementById("menuToggle").addEventListener("click",()=>document.getElementById("sidebar").classList.toggle("open"));
+document.getElementById("resetButton").addEventListener("click",()=>{
+ if(confirm("Möchtest du wirklich alle lokal gespeicherten Lernpunkte und Ergebnisse löschen?")){
+  state=freshState();saveState();renderHome();renderProgress();renderAchievements();
+  alert("Dein Lernfortschritt wurde zurückgesetzt.");
+ }
+});const authPanel = document.getElementById("authPanel");
+const authTitle = document.getElementById("authTitle");
+const authSubmit = document.getElementById("authSubmit");
+const authSwitch = document.getElementById("authSwitch");
+const authMessage = document.getElementById("authMessage");
+const authForm = document.getElementById("authForm");
+const authEmail = document.getElementById("authEmail");
+const authPassword = document.getElementById("authPassword");
+const loginButton = document.getElementById("loginButton");
+const logoutButton = document.getElementById("logoutButton");
+const profileLabel = document.getElementById("profileLabel");
+
+function showAuthMessage(message) {
+  authMessage.textContent = message;
+}
+
+function openAuth() {
+  authPanel.style.display = "block";
+  showAuthMessage("");
+}
+
+function closeAuth() {
+  authPanel.style.display = "none";
+  authForm.reset();
+}
+
+function updateAuthUI(user) {
+  currentUser = user || null;
+  profileLabel.textContent = user ? "🎓 " + (user.email || "Angemeldet") : "🎓 Gast";
+  loginButton.hidden = !!user;
+  logoutButton.hidden = !user;
+}
+
+async function loadCloudProgress(user) {
+  const { data, error } = await supabaseClient
+    .from("user_progress")
+    .select("progress")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Lernfortschritt konnte nicht geladen werden:", error.message);
+    showAuthMessage("Angemeldet, aber der Cloud-Fortschritt konnte nicht geladen werden. Bitte prüfe die Supabase-Tabelle und RLS-Richtlinien.");
+    return;
+  }
+
+  if (data && data.progress) {
+    state = {
+      ...freshState(),
+      ...data.progress,
+      results: data.progress.results || {},
+      recent: data.progress.recent || []
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    renderFilters();
+    renderHome();
+    renderAllCourses();
+    renderProgress();
+    renderAchievements();
+  } else {
+    const { error: saveError } = await supabaseClient
+      .from("user_progress")
+      .upsert({
+        user_id: user.id,
+        progress: state,
+        updated_at: new Date().toISOString()
+      });
+    if (saveError) console.error("Erster Cloud-Speicherstand fehlgeschlagen:", saveError.message);
+  }
+}
+
+loginButton.addEventListener("click", () => {
+  authMode = "login";
+  authTitle.textContent = "Bei LernUp anmelden";
+  authSubmit.textContent = "Anmelden";
+  authSwitch.textContent = "Noch kein Konto? Registrieren";
+  authPassword.autocomplete = "current-password";
+  openAuth();
+});
+
+logoutButton.addEventListener("click", async () => {
+  const { error } = await supabaseClient.auth.signOut();
+  if (error) {
+    alert("Abmelden fehlgeschlagen: " + error.message);
+    return;
+  }
+  updateAuthUI(null);
+});
+
+document.getElementById("authClose").addEventListener("click", closeAuth);
+
+authPanel.addEventListener("click", (event) => {
+  if (event.target === authPanel) closeAuth();
+});
+
+authSwitch.addEventListener("click", () => {
+  authMode = authMode === "login" ? "signup" : "login";
+  authTitle.textContent = authMode === "login" ? "Bei LernUp anmelden" : "LernUp-Konto erstellen";
+  authSubmit.textContent = authMode === "login" ? "Anmelden" : "Registrieren";
+  authSwitch.textContent = authMode === "login" ? "Noch kein Konto? Registrieren" : "Schon ein Konto? Anmelden";
+  authPassword.autocomplete = authMode === "login" ? "current-password" : "new-password";
+  showAuthMessage("");
+});
+
+authForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  authSubmit.disabled = true;
+  showAuthMessage("Bitte warten …");
+
+  const email = authEmail.value.trim();
+  const password = authPassword.value;
+
+  try {
+    if (authMode === "signup") {
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.origin }
+      });
+      if (error) throw error;
+
+      if (data.session) {
+        updateAuthUI(data.session.user);
+        closeAuth();
+        await loadCloudProgress(data.session.user);
+      } else {
+        showAuthMessage("Registrierung erfolgreich! Bitte bestätige deine E-Mail-Adresse über den Link in deinem Postfach.");
+      }
+    } else {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      updateAuthUI(data.user);
+      closeAuth();
+      await loadCloudProgress(data.user);
+    }
+  } catch (error) {
+    showAuthMessage("Fehler: " + error.message);
+  } finally {
+    authSubmit.disabled = false;
+  }
+});
+
+supabaseClient.auth.onAuthStateChange((_event, session) => {
+  updateAuthUI(session?.user || null);
+  if (session?.user) {
+    setTimeout(() => loadCloudProgress(session.user), 0);
+  }
+});
+
+(async function restoreSession() {
+  const { data, error } = await supabaseClient.auth.getSession();
+  if (error) {
+    console.error("Sitzung konnte nicht geladen werden:", error.message);
+    return;
+  }
+  updateAuthUI(data.session?.user || null);
+  if (data.session?.user) await loadCloudProgress(data.session.user);
+})();
+renderFilters();
+renderHome();
+renderAllCourses();
+renderProgress();
+renderAchievements();
+</script>
+</body>
+</html>
