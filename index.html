@@ -939,12 +939,7 @@ supabaseClient.auth.onAuthStateChange((_event, session) => {
     setTimeout(() => loadCloudProgress(session.user), 0);
   }
 });
-
-(async function restoreSession() {
-  const { data, error } = await supabaseClient.auth.getSession();
-  if (error) {
-    console.error("Sitzung konnte nicht geladen werden:", error.message);
-    return;
+  
   }
   updateAuthUI(data.session?.user || null);
   if (data.session?.user) await loadCloudProgress(data.session.user);
